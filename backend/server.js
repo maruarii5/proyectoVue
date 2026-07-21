@@ -1,10 +1,15 @@
 require("dotenv").config();
+
 const express = require('express');
 const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+// Importa las rutas relacionadas con la autenticación
+const authRoutes = require("./routes/authRoutes");
+
+// Importa la conexión a SQLite desde el archivo database.js
+const db = require("./config/database");
 
 const app = express();
 // Obtiene el puerto desde el archivo .env
@@ -20,14 +25,7 @@ app.use(cors({ // Permite que tu frontend en Vue se conecte sin problemas de COR
     })); 
 app.use(express.json()); // Permite recibir datos en formato JSON
 
-// Conexión a la base de datos SQLite (se creará un archivo llamado escuela.db)
-const db = new sqlite3.Database('./escuela.db', (err) => {
-    if (err) {
-        console.error('Error al abrir la base de datos:', err.message);
-    } else {
-        console.log('Conectado con éxito a la base de datos SQLite (escuela.db).');
-    }
-});
+app.use("/api/auth", authRoutes);
 
 // Activar el soporte de Llaves Foráneas en SQLite
 db.run("PRAGMA foreign_keys = ON;");
@@ -338,3 +336,4 @@ app.delete('/api/estados/:id', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor corriendo correctamente en http://localhost:${PORT}`);
 });
+

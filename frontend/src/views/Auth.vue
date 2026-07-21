@@ -3,15 +3,32 @@
     <h2>{{ isLogin ? 'Iniciar Sesión' : 'Crear Cuenta' }}</h2>
 
     <form @submit.prevent="handleSubmit">
-      <!-- Campo de Correo -->
-      <div>
-        <label for="email">Correo:</label>
-        <input 
-          type="email" 
-          id="email" 
-          v-model="email" 
-          placeholder="tu@correo.com"
+            <!-- Nombre (solo aparece al registrarse) -->
+      <div v-if="!isLogin">
+
+        <label for="nombre">Nombre:</label>
+
+        <input
+          type="text"
+          id="nombre"
+          v-model="nombre"
+          placeholder="Escribe tu nombre completo"
         >
+
+      </div>
+
+      <!-- Usuario -->
+      <div>
+
+        <label for="usuario">Usuario:</label>
+
+        <input
+          type="text"
+          id="usuario"
+          v-model="usuario"
+          placeholder="Escribe tu usuario"
+        >
+
       </div>
 
       <!-- Campo de Contraseña -->
@@ -21,7 +38,7 @@
           type="password" 
           id="password" 
           v-model="password" 
-          placeholder="Mínimo 6 caracteres"
+          placeholder="Mínimo 8 caracteres"
         >
       </div>
 
@@ -46,70 +63,113 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useAuthStore } from "../stores/authStore";
+import { useRouter } from "vue-router";
 
 // Variables reactivas
 const isLogin = ref(true); // Empieza en modo Login
-const email = ref('');
-const password = ref('');
+// Nombre completo (solo se usa al registrarse)
+const nombre = ref("");
+
+// Nombre de usuario para iniciar sesión
+const usuario = ref("");
+
+// Contraseña
+const password = ref("");
+
+// Mensaje de error
 const errorMessage = ref('');
+
+// Acceso al almacén de autenticación
+const authStore = useAuthStore();
+
+// Permite cambiar de página
+const router = useRouter();
 
 // Cambiar entre Login y Registro
 const toggleMode = () => {
   isLogin.value = !isLogin.value;
   errorMessage.value = ''; // Limpiamos errores al cambiar
-  email.value = '';
-  password.value = '';
+  nombre.value = "";
+  usuario.value = "";
+  password.value = "";
 };
 
 // Validaciones y envío de datos
 const handleSubmit = async () => {
   errorMessage.value = ''; // Reiniciar errores
 
-  // 1. Validaciones acá bien hechas en el frontend
-  if (!email.value || !password.value) {
-    errorMessage.value = '¡Ey! No dejes campos vacíos.';
-    return;
-  }
-  
-  if (!email.value.includes('@')) {
-    errorMessage.value = 'Pon un correo válido.';
+  // Si falta el usuario o la contraseña
+  if (!usuario.value || !password.value) {
+    errorMessage.value = "¡Ey! No dejes campos vacíos.";
     return;
   }
 
-  if (password.value.length < 6) {
-    errorMessage.value = 'La contraseña debe tener al menos 6 caracteres.';
+  // Si estamos registrando un usuario, verificamos el nombre.
+  if (!isLogin.value && !nombre.value) {
+    errorMessage.value = "Debes escribir tu nombre.";
+    return;
+  }
+
+  // La contraseña debe tener al menos 8 caracteres
+  if (password.value.length < 8) {
+    errorMessage.value = "La contraseña debe tener mínimo 8 caracteres.";
     return;
   }
 
   // 2. Si todo está bien, mandamos la info al Backend
   try {
-    const endpoint = isLogin.value ? 'http://localhost:3000/login' : 'http://localhost:3000/register';
-    
-    // Aquí hacemos la petición a tu backend
-    /* 
+    const endpoint = isLogin.value
+      ? "http://localhost:3000/api/auth/login"
+      : "http://localhost:3000/api/auth/register";
+
     const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.value, password: password.value })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        nombre: nombre.value,
+        usuario: usuario.value,
+        password: password.value,
+        idRol: 2
+      })
     });
 
     const data = await response.json();
 
+    // Si el servidor respondió con un error
     if (!response.ok) {
-      throw new Error(data.message || 'Error en el servidor');
+      throw new Error(data.message);
     }
 
-    console.log("¡Todo chido!", data);
-    // Aquí guardarías el token (localStorage) y rediriges al usuario
-    */
-   
-    console.log(`Simulando envío a: ${endpoint}`, { email: email.value, password: password.value });
-    alert(isLogin.value ? '¡Sesión iniciada con éxito!' : '¡Cuenta creada con éxito!');
+    if (isLogin.value) {
+      const respuesta = await fetch(
+        "http://localhost:3000/api/auth/me",
+        {
+          method: "GET",
+          credentials: "include"
+        }
+      );
+
+      const usuarioAutenticado = await respuesta.json();
+      // Guarda el usuario autenticado en Pinia
+      authStore.setUsuario(usuarioAutenticado.usuario);
+
+      // Redirige al Dashboard
+      router.push("/dashboard");
+    } else {
+      alert("Usuario registrado correctamente.");
+    }
+
 
   } catch (error) {
     errorMessage.value = error.message;
   }
 };
+
+
 </script>
 
 <style scoped>
