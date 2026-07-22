@@ -3,7 +3,7 @@
     <div class="contenedor">
 
         <CrudToolbar
-            titulo="Catálogo de Géneros"
+            titulo="Géneros"
             subtitulo="Administración de géneros"
             @buscar="filtrarGeneros"
             @nuevo="nuevoRegistro"
