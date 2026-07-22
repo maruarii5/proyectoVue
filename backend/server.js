@@ -332,6 +332,445 @@ app.delete('/api/estados/:id', (req, res) => {
     });
 });
 
+
+// ======================================================
+// MUNICIPIOS
+// ======================================================
+
+// Obtener todos los municipios con el nombre del estado
+app.get("/api/municipios", (req, res) => {
+
+    const sql = `
+        SELECT
+            M.idMunicipio,
+            M.Nombre,
+            M.idEstado,
+            E.Nombre AS Estado
+        FROM Municipios M
+        INNER JOIN Estados E
+            ON M.idEstado = E.idEstado
+        ORDER BY E.Nombre, M.Nombre
+    `;
+
+    db.all(sql, [], (err, rows) => {
+
+        if (err) {
+
+            return res.status(500).json({
+                error: err.message
+            });
+
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+// Agregar municipio
+app.post("/api/municipios", (req, res) => {
+
+    const { Nombre, idEstado } = req.body;
+
+    db.run(
+
+        "INSERT INTO Municipios (Nombre,idEstado) VALUES (?,?)",
+
+        [Nombre, idEstado],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+                    error: err.message
+                });
+
+            }
+
+            res.json({
+
+                idMunicipio: this.lastID,
+
+                Nombre,
+
+                idEstado
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar municipio
+app.put("/api/municipios/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    const { Nombre, idEstado } = req.body;
+
+    db.run(
+
+        "UPDATE Municipios SET Nombre=?, idEstado=? WHERE idMunicipio=?",
+
+        [Nombre, idEstado, id],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+                    error: err.message
+                });
+
+            }
+
+            res.json({
+
+                message: "Municipio actualizado."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar municipio
+app.delete("/api/municipios/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    db.run(
+
+        "DELETE FROM Municipios WHERE idMunicipio=?",
+
+        [id],
+
+        function (err) {
+
+            if (err) {
+
+                if (err.message.includes("FOREIGN")) {
+
+                    return res.status(400).json({
+
+                        error: "No puedes eliminar este municipio porque tiene localidades relacionadas."
+
+                    });
+
+                }
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message: "Municipio eliminado."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+// ===============================
+// LOCALIDADES
+// ===============================
+
+// Obtener todas las localidades
+app.get("/api/localidades", (req, res) => {
+
+    const sql = `
+        SELECT
+            L.idLocalidad,
+            L.Nombre,
+            L.idMunicipio,
+            M.Nombre AS Municipio,
+            E.Nombre AS Estado
+        FROM Localidades L
+        INNER JOIN Municipios M
+            ON L.idMunicipio = M.idMunicipio
+        INNER JOIN Estados E
+            ON M.idEstado = E.idEstado
+        ORDER BY
+            E.Nombre,
+            M.Nombre,
+            L.Nombre
+    `;
+
+    db.all(sql, [], (err, rows) => {
+
+        if (err) {
+
+            return res.status(500).json({
+                error: err.message
+            });
+
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+// Agregar localidad
+app.post("/api/localidades", (req, res) => {
+
+    const { Nombre, idMunicipio } = req.body;
+
+    db.run(
+
+        "INSERT INTO Localidades (Nombre,idMunicipio) VALUES (?,?)",
+
+        [Nombre, idMunicipio],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+                    error: err.message
+                });
+
+            }
+
+            res.json({
+
+                idLocalidad: this.lastID,
+
+                Nombre,
+
+                idMunicipio
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar localidad
+app.put("/api/localidades/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    const { Nombre, idMunicipio } = req.body;
+
+    db.run(
+
+        "UPDATE Localidades SET Nombre=?, idMunicipio=? WHERE idLocalidad=?",
+
+        [Nombre, idMunicipio, id],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+                    error: err.message
+                });
+
+            }
+
+            res.json({
+
+                message: "Localidad actualizada."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar localidad
+app.delete("/api/localidades/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    db.run(
+
+        "DELETE FROM Localidades WHERE idLocalidad=?",
+
+        [id],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+                    error: err.message
+                });
+
+            }
+
+            res.json({
+
+                message: "Localidad eliminada."
+
+            });
+
+        }
+
+    );
+
+});
+
+//==========================================
+// GENEROS
+//==========================================
+
+// Obtener todos
+app.get("/api/generos", (req, res) => {
+
+    db.all(
+
+        "SELECT * FROM Generos ORDER BY Genero",
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar
+
+app.post("/api/generos", (req, res) => {
+
+    const { Genero } = req.body;
+
+    db.run(
+
+        "INSERT INTO Generos (Genero) VALUES (?)",
+
+        [Genero],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idGenero:this.lastID,
+
+                Genero
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar
+
+app.put("/api/generos/:id",(req,res)=>{
+
+    const {id}=req.params;
+
+    const {Genero}=req.body;
+
+    db.run(
+
+        "UPDATE Generos SET Genero=? WHERE idGenero=?",
+
+        [Genero,id],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Genero actualizado."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar
+
+app.delete("/api/generos/:id",(req,res)=>{
+    const {id}=req.params;
+
+    db.run(
+
+        "DELETE FROM Generos WHERE idGenero=?",
+
+        [id],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+                    error:err.message
+                });
+            }
+
+            res.json({
+                message:"Genero eliminado."
+            });
+
+        }
+
+    );
+
+});
+
 // Levantar el servidor
 app.listen(PORT, () => {
     console.log(`Servidor corriendo correctamente en http://localhost:${PORT}`);

@@ -2,18 +2,14 @@
 
     <aside class="sidebar">
 
-        <!-- ========================= -->
-        <!-- TÍTULO -->
-        <!-- ========================= -->
+        <!-- Logo -->
         <div class="logo">
 
             <h2>🎓 Sistema Escolar</h2>
 
         </div>
 
-        <!-- ========================= -->
-        <!-- DASHBOARD -->
-        <!-- ========================= -->
+        <!-- Dashboard -->
         <div class="grupo">
 
             <h3>🏠 Dashboard</h3>
@@ -27,15 +23,13 @@
 
         </div>
 
-        <!-- ========================= -->
-        <!-- CATÁLOGOS -->
-        <!-- ========================= -->
+        <!-- Catálogos -->
         <div
             v-if="esAdministrador"
             class="grupo"
         >
 
-            <h3>📍 Catálogos</h3>
+            <h3>📂 Catálogos</h3>
 
             <RouterLink class="menu-item" to="/estados">
                 Estados
@@ -67,46 +61,30 @@
 
         </div>
 
-        <!-- ========================= -->
-        <!-- PERSONAS -->
-        <!-- ========================= -->
+        <!-- Personas -->
         <div class="grupo">
 
             <h3>👥 Personas</h3>
 
-            <RouterLink
-                class="menu-item"
-                to="/datospersonales"
-            >
+            <RouterLink class="menu-item" to="/datospersonales">
                 Datos Personales
             </RouterLink>
 
-            <RouterLink
-                class="menu-item"
-                to="/personal"
-            >
+            <RouterLink class="menu-item" to="/personal">
                 Personal
             </RouterLink>
 
-            <RouterLink
-                class="menu-item"
-                to="/intendencia"
-            >
+            <RouterLink class="menu-item" to="/intendencia">
                 Intendencia
             </RouterLink>
 
-            <RouterLink
-                class="menu-item"
-                to="/alumnos"
-            >
+            <RouterLink class="menu-item" to="/alumnos">
                 Alumnos
             </RouterLink>
 
         </div>
 
-        <!-- ========================= -->
-        <!-- ESCUELA -->
-        <!-- ========================= -->
+        <!-- Escuela -->
         <div
             v-if="esAdministrador"
             class="grupo"
@@ -114,18 +92,13 @@
 
             <h3>🏫 Escuela</h3>
 
-            <RouterLink
-                class="menu-item"
-                to="/datosescuela"
-            >
+            <RouterLink class="menu-item" to="/datosescuela">
                 Datos Escuela
             </RouterLink>
 
         </div>
 
-        <!-- ========================= -->
-        <!-- SEGURIDAD -->
-        <!-- ========================= -->
+        <!-- Seguridad -->
         <div
             v-if="esAdministrador"
             class="grupo"
@@ -133,19 +106,27 @@
 
             <h3>🔐 Seguridad</h3>
 
-            <RouterLink
-                class="menu-item"
-                to="/usuarios"
-            >
+            <RouterLink class="menu-item" to="/usuarios">
                 Usuarios
             </RouterLink>
 
-            <RouterLink
-                class="menu-item"
-                to="/roles"
-            >
+            <RouterLink class="menu-item" to="/roles">
                 Roles
             </RouterLink>
+
+        </div>
+
+        <!-- Sesión -->
+        <div class="grupo">
+
+            <h3>⚙ Cuenta</h3>
+
+            <button
+                class="btn-salir"
+                @click="cerrarSesion"
+            >
+                Cerrar sesión
+            </button>
 
         </div>
 
@@ -156,17 +137,50 @@
 <script setup>
 
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/authStore";
 
-// Obtiene la información del usuario autenticado
+const router = useRouter();
+
 const authStore = useAuthStore();
 
-// Verifica si el usuario tiene rol Administrador
 const esAdministrador = computed(() => {
 
     return authStore.usuario?.idRol === 1;
 
 });
+
+async function cerrarSesion(){
+
+    try{
+
+        await fetch(
+
+            "http://localhost:3000/api/auth/logout",
+
+            {
+
+                method:"POST",
+
+                credentials:"include"
+
+            }
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+    authStore.cerrarSesion();
+
+    router.push("/");
+
+}
 
 </script>
 
@@ -175,18 +189,31 @@ const esAdministrador = computed(() => {
 .sidebar{
 
     width:280px;
+
+    min-width:280px;
+
     min-height:100vh;
+
     background:#111827;
+
     color:white;
+
     padding:25px;
+
     overflow-y:auto;
+
     border-right:1px solid #374151;
+
+    display:flex;
+
+    flex-direction:column;
 
 }
 
 .logo{
 
     text-align:center;
+
     margin-bottom:35px;
 
 }
@@ -194,53 +221,102 @@ const esAdministrador = computed(() => {
 .logo h2{
 
     margin:0;
+
     color:white;
-    font-size:1.4rem;
+
+    font-size:24px;
 
 }
 
 .grupo{
 
-    margin-bottom:30px;
+    margin-bottom:28px;
 
 }
 
 .grupo h3{
 
     color:#93c5fd;
+
     margin-bottom:12px;
+
     border-bottom:1px solid #374151;
+
     padding-bottom:8px;
-    font-size:1rem;
+
+    font-size:15px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
 
 }
 
 .menu-item{
 
     display:block;
+
     text-decoration:none;
-    color:white;
+
+    color:#f3f4f6;
+
     background:#1f2937;
-    padding:12px;
+
+    padding:12px 14px;
+
     margin-bottom:8px;
+
     border-radius:8px;
-    transition:all .25s;
+
+    transition:.25s;
+
+    font-size:15px;
 
 }
 
 .menu-item:hover{
 
     background:#374151;
-    transform:translateX(6px);
+
+    transform:translateX(5px);
 
 }
-
-/* Ruta activa */
 
 .router-link-active{
 
     background:#2563eb;
+
+    color:white;
+
     font-weight:bold;
+
+}
+
+.btn-salir{
+
+    width:100%;
+
+    background:#dc2626;
+
+    color:white;
+
+    border:none;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.25s;
+
+}
+
+.btn-salir:hover{
+
+    background:#b91c1c;
 
 }
 

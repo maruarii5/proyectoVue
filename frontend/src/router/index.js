@@ -59,6 +59,8 @@ const router = createRouter({
 
                     path: "dashboard",
 
+                    name: "dashboard",
+
                     component: DashboardView
 
                 },
@@ -66,6 +68,8 @@ const router = createRouter({
                 {
 
                     path: "estados",
+
+                    name: "estados",
 
                     component: EstadosView
 
@@ -75,6 +79,8 @@ const router = createRouter({
 
                     path: "municipios",
 
+                    name: "municipios",
+
                     component: MunicipiosView
 
                 },
@@ -82,6 +88,8 @@ const router = createRouter({
                 {
 
                     path: "localidades",
+
+                    name: "localidades",
 
                     component: LocalidadesView
 
@@ -91,6 +99,8 @@ const router = createRouter({
 
                     path: "generos",
 
+                    name: "generos",
+
                     component: GenerosView
 
                 },
@@ -98,6 +108,8 @@ const router = createRouter({
                 {
 
                     path: "tipopersonal",
+
+                    name: "tipopersonal",
 
                     component: TipoPersonalView
 
@@ -107,6 +119,8 @@ const router = createRouter({
 
                     path: "carreras",
 
+                    name: "carreras",
+
                     component: CarrerasView
 
                 },
@@ -114,6 +128,8 @@ const router = createRouter({
                 {
 
                     path: "asignaturas",
+
+                    name: "asignaturas",
 
                     component: AsignaturasView
 
@@ -123,6 +139,8 @@ const router = createRouter({
 
                     path: "datospersonales",
 
+                    name: "datospersonales",
+
                     component: DatosPersonalesView
 
                 },
@@ -130,6 +148,8 @@ const router = createRouter({
                 {
 
                     path: "personal",
+
+                    name: "personal",
 
                     component: PersonalView
 
@@ -139,6 +159,8 @@ const router = createRouter({
 
                     path: "intendencia",
 
+                    name: "intendencia",
+
                     component: IntendenciaView
 
                 },
@@ -146,6 +168,8 @@ const router = createRouter({
                 {
 
                     path: "alumnos",
+
+                    name: "alumnos",
 
                     component: AlumnosView
 
@@ -155,6 +179,8 @@ const router = createRouter({
 
                     path: "datosescuela",
 
+                    name: "datosescuela",
+
                     component: DatosEscuelaView
 
                 },
@@ -163,6 +189,8 @@ const router = createRouter({
 
                     path: "usuarios",
 
+                    name: "usuarios",
+
                     component: UsuariosView
 
                 },
@@ -170,6 +198,8 @@ const router = createRouter({
                 {
 
                     path: "roles",
+
+                    name: "roles",
 
                     component: RolesView
 
