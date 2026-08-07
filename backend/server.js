@@ -178,6 +178,24 @@ db.serialize(() => {
     )`);
 });
 
+
+app.get("/api/debug/alumnos", (req, res) => {
+
+    db.all("PRAGMA table_info(Alumnos)", [], (err, rows) => {
+
+        if (err) {
+
+            return res.json(err);
+
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+
 // ==========================================
 // ENDPOINTS DE AUTENTICACIÓN
 // ==========================================
@@ -287,8 +305,10 @@ app.post('/login', (req, res) => {
 });
 
 
+
+
 // ==========================================
-// CRUD: TABLA ESTADOS
+// ESTADOS
 // ==========================================
 
 // Leer todos los estados (READ)
@@ -771,8 +791,2406 @@ app.delete("/api/generos/:id",(req,res)=>{
 
 });
 
+
+
+//==========================================
+// TIPO DE PERSONAL
+//==========================================
+
+// Obtener tipos de personal
+app.get("/api/tipopersonal", (req, res) => {
+
+    db.all(
+
+        `
+        SELECT
+            idTipo,
+            Personal
+        FROM TipoPersonal
+        ORDER BY Personal
+        `,
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar tipo de personal
+app.post("/api/tipopersonal", (req, res) => {
+
+    const { Personal } = req.body;
+
+    db.run(
+
+        "INSERT INTO TipoPersonal (Personal) VALUES (?)",
+
+        [Personal],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idTipo: this.lastID,
+
+                Personal
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar tipo de personal
+app.put("/api/tipopersonal/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    const { Personal } = req.body;
+
+    db.run(
+
+        "UPDATE TipoPersonal SET Personal=? WHERE idTipo=?",
+
+        [
+
+            Personal,
+
+            id
+
+        ],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message: "Tipo de personal actualizado."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar tipo de personal
+app.delete("/api/tipopersonal/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    db.run(
+
+        "DELETE FROM TipoPersonal WHERE idTipo=?",
+
+        [id],
+
+        function (err) {
+
+            if (err) {
+
+                if (err.message.includes("FOREIGN")) {
+
+                    return res.status(400).json({
+
+                        error: "No puedes eliminar este tipo de personal porque está siendo utilizado."
+
+                    });
+
+                }
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message: "Tipo de personal eliminado."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+//==========================================
+// PERSONAL
+//==========================================
+
+// Obtener todo el personal
+app.get("/api/personal", (req, res) => {
+
+    const sql = `
+        SELECT
+            P.idPersonal,
+            P.idDatosP,
+            P.idTipo,
+            P.ClaveEmp,
+            P.Status,
+            DP.Nombre AS Persona,
+            TP.Personal AS Tipo
+        FROM Personal P
+        INNER JOIN DatosPersonales DP
+            ON P.idDatosP = DP.idDatosP
+        INNER JOIN TipoPersonal TP
+            ON P.idTipo = TP.idTipo
+        ORDER BY DP.Nombre
+    `;
+
+    db.all(sql, [], (err, rows) => {
+
+        if (err) {
+
+            return res.status(500).json({
+                error: err.message
+            });
+
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+// Obtener Personas
+app.get("/api/personal/personas", (req, res) => {
+
+    db.all(
+
+        `
+        SELECT
+            idDatosP,
+            Nombre
+        FROM DatosPersonales
+        ORDER BY Nombre
+        `,
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+                    error: err.message
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Obtener Tipos de Personal
+app.get("/api/personal/tipos", (req, res) => {
+
+    db.all(
+
+        `
+        SELECT
+            idTipo,
+            Personal
+        FROM TipoPersonal
+        ORDER BY Personal
+        `,
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+                    error: err.message
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar Personal
+app.post("/api/personal", (req, res) => {
+
+    const {
+
+        idDatosP,
+        idTipo,
+        ClaveEmp,
+        Status
+
+    } = req.body;
+
+    db.run(
+
+        `
+        INSERT INTO Personal
+        (
+            idDatosP,
+            idTipo,
+            ClaveEmp,
+            Status
+        )
+        VALUES (?,?,?,?)
+        `,
+
+        [
+
+            idDatosP,
+            idTipo,
+            ClaveEmp,
+            Status
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idPersonal:this.lastID
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar Personal
+app.put("/api/personal/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    const {
+
+        idDatosP,
+        idTipo,
+        ClaveEmp,
+        Status
+
+    } = req.body;
+
+    db.run(
+
+        `
+        UPDATE Personal
+        SET
+
+            idDatosP=?,
+            idTipo=?,
+            ClaveEmp=?,
+            Status=?
+
+        WHERE idPersonal=?
+        `,
+
+        [
+
+            idDatosP,
+            idTipo,
+            ClaveEmp,
+            Status,
+            id
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Personal actualizado."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar Personal
+app.delete("/api/personal/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    db.run(
+
+        "DELETE FROM Personal WHERE idPersonal=?",
+
+        [id],
+
+        function(err){
+
+            if(err){
+
+                if(err.message.includes("FOREIGN")){
+
+                    return res.status(400).json({
+
+                        error:"No es posible eliminar este registro."
+
+                    });
+
+                }
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Registro eliminado."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+
+//==========================================
+// DATOS PERSONALES
+//==========================================
+
+// Obtener todos
+app.get("/api/datospersonales", (req, res) => {
+
+    const sql = `
+        SELECT
+            D.idDatosP, D.Nombre, D.FechaNacimiento, D.Curp, D.Email, D.Telefono, D.Calle, D.NumE,
+            D.NumI, D.CP, D.idEstado, D.idMunicipio, D.idLocalidad, D.idGenero, E.Nombre AS Estado,
+            M.Nombre AS Municipio, L.Nombre AS Localidad, G.Genero
+        FROM DatosPersonales D
+        LEFT JOIN Estados E
+            ON D.idEstado = E.idEstado
+        LEFT JOIN Municipios M
+            ON D.idMunicipio = M.idMunicipio
+        LEFT JOIN Localidades L
+            ON D.idLocalidad = L.idLocalidad
+        LEFT JOIN Generos G
+            ON D.idGenero = G.idGenero
+        ORDER BY D.Nombre
+    `;
+
+    db.all(sql, [], (err, rows) => {
+
+        if (err) {
+
+            return res.status(500).json({
+
+                error: err.message
+
+            });
+
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+// Estados
+app.get("/api/datospersonales/estados", (req, res) => {
+
+    db.all(
+
+        "SELECT idEstado, Nombre FROM Estados ORDER BY Nombre",
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Municipios
+app.get("/api/datospersonales/municipios", (req, res) => {
+
+    db.all(
+
+        "SELECT idMunicipio, Nombre FROM Municipios ORDER BY Nombre",
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Localidades
+app.get("/api/datospersonales/localidades", (req, res) => {
+
+    db.all(
+
+        "SELECT idLocalidad, Nombre FROM Localidades ORDER BY Nombre",
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Géneros
+app.get("/api/datospersonales/generos", (req, res) => {
+
+    db.all(
+
+        "SELECT idGenero, Genero FROM Generos ORDER BY Genero",
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar Datos Personales
+app.post("/api/datospersonales", (req, res) => {
+
+    const {
+
+        Nombre,
+        FechaNacimiento,
+        Curp,
+        Email,
+        Telefono,
+        Calle,
+        NumE,
+        NumI,
+        CP,
+        idLocalidad,
+        idMunicipio,
+        idEstado,
+        idGenero
+
+    } = req.body;
+
+    db.run(
+
+        `INSERT INTO DatosPersonales
+        (
+            Nombre,
+            FechaNacimiento,
+            Curp,
+            Email,
+            Telefono,
+            Calle,
+            NumE,
+            NumI,
+            CP,
+            idLocalidad,
+            idMunicipio,
+            idEstado,
+            idGenero
+        )
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+
+        [
+
+            Nombre,
+            FechaNacimiento,
+            Curp,
+            Email,
+            Telefono,
+            Calle,
+            NumE,
+            NumI,
+            CP,
+            idLocalidad,
+            idMunicipio,
+            idEstado,
+            idGenero
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idDatosP:this.lastID
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar Datos Personales
+app.put("/api/datospersonales/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    const {
+
+        Nombre,
+        FechaNacimiento,
+        Curp,
+        Email,
+        Telefono,
+        Calle,
+        NumE,
+        NumI,
+        CP,
+        idLocalidad,
+        idMunicipio,
+        idEstado,
+        idGenero
+
+    } = req.body;
+
+    db.run(
+
+        `UPDATE DatosPersonales SET
+
+            Nombre=?,
+            FechaNacimiento=?,
+            Curp=?,
+            Email=?,
+            Telefono=?,
+            Calle=?,
+            NumE=?,
+            NumI=?,
+            CP=?,
+            idLocalidad=?,
+            idMunicipio=?,
+            idEstado=?,
+            idGenero=?
+
+        WHERE idDatosP=?`,
+
+        [
+
+            Nombre,
+            FechaNacimiento,
+            Curp,
+            Email,
+            Telefono,
+            Calle,
+            NumE,
+            NumI,
+            CP,
+            idLocalidad,
+            idMunicipio,
+            idEstado,
+            idGenero,
+            id
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Datos personales actualizados."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar Datos Personales
+app.delete("/api/datospersonales/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    db.run(
+
+        "DELETE FROM DatosPersonales WHERE idDatosP=?",
+
+        [id],
+
+        function(err){
+
+            if(err){
+
+                if(err.message.includes("FOREIGN")){
+
+                    return res.status(400).json({
+
+                        error:"No puedes eliminar este registro porque está relacionado con otros datos."
+
+                    });
+
+                }
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Registro eliminado."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+//==========================================
+// CARRERAS
+//==========================================
+
+// Obtener todas las carreras
+app.get("/api/carreras", (req, res) => {
+
+    db.all(
+
+        `
+        SELECT
+            idCarrera,
+            NombreCarreras,
+            Estatus
+        FROM Carreras
+        ORDER BY NombreCarreras
+        `,
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar carrera
+app.post("/api/carreras", (req, res) => {
+
+    const {
+
+        NombreCarreras,
+        Estatus
+
+    } = req.body;
+
+    db.run(
+
+        `
+        INSERT INTO Carreras
+        (
+            NombreCarreras,
+            Estatus
+        )
+        VALUES (?,?)
+        `,
+
+        [
+
+            NombreCarreras,
+            Estatus
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idCarrera:this.lastID
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar carrera
+app.put("/api/carreras/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    const {
+
+        NombreCarreras,
+        Estatus
+
+    } = req.body;
+
+    db.run(
+
+        `
+        UPDATE Carreras
+        SET
+
+            NombreCarreras=?,
+            Estatus=?
+
+        WHERE idCarrera=?
+        `,
+
+        [
+
+            NombreCarreras,
+            Estatus,
+            id
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Carrera actualizada."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar carrera
+app.delete("/api/carreras/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    db.run(
+
+        "DELETE FROM Carreras WHERE idCarrera=?",
+
+        [id],
+
+        function(err){
+
+            if(err){
+
+                if(err.message.includes("FOREIGN")){
+
+                    return res.status(400).json({
+
+                        error:"No es posible eliminar esta carrera porque tiene registros relacionados."
+
+                    });
+
+                }
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Carrera eliminada."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+
+//==========================================
+// ALUMNOS
+//==========================================
+
+// Obtener alumnos
+app.get("/api/alumnos", (req, res) => {
+
+    const sql = `
+        SELECT
+            A.Matricula,
+            A.idCarrera,
+            A.idDatosP,
+            A.Status,
+            D.Nombre AS Alumno,
+            C.NombreCarreras AS Carrera
+        FROM Alumnos A
+        INNER JOIN DatosPersonales D
+            ON A.idDatosP = D.idDatosP
+        INNER JOIN Carreras C
+            ON A.idCarrera = C.idCarrera
+        ORDER BY D.Nombre
+    `;
+
+    db.all(sql, [], (err, rows) => {
+
+        if(err){
+
+            return res.status(500).json({
+
+                error:err.message
+
+            });
+
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+// Obtener personas
+app.get("/api/alumnos/personas",(req,res)=>{
+
+    db.all(
+
+        `
+        SELECT
+            idDatosP,
+            Nombre
+        FROM DatosPersonales
+        ORDER BY Nombre
+        `,
+
+        [],
+
+        (err,rows)=>{
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Obtener carreras
+app.get("/api/alumnos/carreras",(req,res)=>{
+
+    db.all(
+
+        `
+        SELECT
+            idCarrera,
+            NombreCarreras
+        FROM Carreras
+        ORDER BY NombreCarreras
+        `,
+
+        [],
+
+        (err,rows)=>{
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar alumno
+// Agregar alumno
+app.post("/api/alumnos", (req, res) => {
+
+    console.log("POST ALUMNOS:", req.body);
+
+    console.log("BODY:", req.body);
+
+    const {
+        Matricula,
+        idCarrera,
+        idDatosP,
+        Status
+    } = req.body;
+
+    const sql = `
+        INSERT INTO Alumnos
+        (
+            Matricula,
+            idCarrera,
+            idDatosP,
+            Status
+        )
+        VALUES (?,?,?,?)
+    `;
+
+    console.log(sql);
+
+    db.run(
+        sql,
+        [
+            Matricula,
+            idCarrera,
+            idDatosP,
+            Status
+        ],
+        function(err){
+
+            if(err){
+
+                console.log("ERROR SQLITE:", err);
+
+                return res.status(500).json({
+                    error:err.message
+                });
+
+            }
+
+            res.json({
+                Matricula
+            });
+
+        }
+
+    );
+
+});
+
+
+// Actualizar alumno
+app.put("/api/alumnos/:id",(req,res)=>{
+
+    const{id}=req.params;
+
+    const{
+
+        idCarrera,
+        idDatosP,
+        Status
+
+    }=req.body;
+
+    db.run(
+
+        `
+        UPDATE Alumnos
+        SET
+
+            idCarrera=?,
+            idDatosP=?,
+            Status=?
+
+        WHERE Matricula=?
+        `,
+
+        [
+
+            idCarrera,
+            idDatosP,
+            Status,
+            id
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Alumno actualizado."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar alumno
+app.delete("/api/alumnos/:id",(req,res)=>{
+
+    const{id}=req.params;
+
+    db.run(
+
+        "DELETE FROM Alumnos WHERE Matricula=?",
+
+        [id],
+
+        function(err){
+
+            if(err){
+
+                if(err.message.includes("FOREIGN")){
+
+                    return res.status(400).json({
+
+                        error:"No es posible eliminar este alumno."
+
+                    });
+
+                }
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Alumno eliminado."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+//==========================================
+// ASIGNATURAS
+//==========================================
+
+// Obtener asignaturas
+app.get("/api/asignaturas", (req, res) => {
+
+    db.all(
+
+        `
+        SELECT
+            idAsignatura,
+            NombresMaterias,
+            HorasTotales
+        FROM Asignaturas
+        ORDER BY NombresMaterias
+        `,
+
+        [],
+
+        (err, rows) => {
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar asignatura
+app.post("/api/asignaturas",(req,res)=>{
+
+    const{
+
+        NombresMaterias,
+        HorasTotales
+
+    }=req.body;
+
+    db.run(
+
+        `
+        INSERT INTO Asignaturas
+        (
+            NombresMaterias,
+            HorasTotales
+        )
+        VALUES (?,?)
+        `,
+
+        [
+
+            NombresMaterias,
+            HorasTotales
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idAsignatura:this.lastID
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar asignatura
+app.put("/api/asignaturas/:id",(req,res)=>{
+
+    const{id}=req.params;
+
+    const{
+
+        NombresMaterias,
+        HorasTotales
+
+    }=req.body;
+
+    db.run(
+
+        `
+        UPDATE Asignaturas
+        SET
+
+            NombresMaterias=?,
+            HorasTotales=?
+
+        WHERE idAsignatura=?
+        `,
+
+        [
+
+            NombresMaterias,
+            HorasTotales,
+            id
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Asignatura actualizada."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar asignatura
+app.delete("/api/asignaturas/:id",(req,res)=>{
+
+    const{id}=req.params;
+
+    db.run(
+
+        "DELETE FROM Asignaturas WHERE idAsignatura=?",
+
+        [id],
+
+        function(err){
+
+            if(err){
+
+                if(err.message.includes("FOREIGN")){
+
+                    return res.status(400).json({
+
+                        error:"No es posible eliminar esta asignatura porque tiene registros relacionados."
+
+                    });
+
+                }
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Asignatura eliminada."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+//==========================================
+// INTENDENCIA
+//==========================================
+
+// Obtener empleados
+app.get("/api/intendencia", (req, res) => {
+
+    db.all(
+
+        `
+        SELECT
+            idEmpleado,
+            Nombre,
+            Telefono,
+            Area,
+            Turno
+        FROM Intendencia
+        ORDER BY Nombre
+        `,
+
+        [],
+
+        (err, rows) => {
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar empleado
+app.post("/api/intendencia",(req,res)=>{
+
+    const{
+
+        Nombre,
+        Telefono,
+        Area,
+        Turno
+
+    }=req.body;
+
+    db.run(
+
+        `
+        INSERT INTO Intendencia
+        (
+            Nombre,
+            Telefono,
+            Area,
+            Turno
+        )
+        VALUES (?,?,?,?)
+        `,
+
+        [
+
+            Nombre,
+            Telefono,
+            Area,
+            Turno
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idEmpleado:this.lastID
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar empleado
+app.put("/api/intendencia/:id",(req,res)=>{
+
+    const{id}=req.params;
+
+    const{
+
+        Nombre,
+        Telefono,
+        Area,
+        Turno
+
+    }=req.body;
+
+    db.run(
+
+        `
+        UPDATE Intendencia
+        SET
+
+            Nombre=?,
+            Telefono=?,
+            Area=?,
+            Turno=?
+
+        WHERE idEmpleado=?
+        `,
+
+        [
+
+            Nombre,
+            Telefono,
+            Area,
+            Turno,
+            id
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Empleado actualizado."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar empleado
+app.delete("/api/intendencia/:id",(req,res)=>{
+
+    const{id}=req.params;
+
+    db.run(
+
+        "DELETE FROM Intendencia WHERE idEmpleado=?",
+
+        [id],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Empleado eliminado."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+//==========================================
+// DATOS ESCUELA
+//==========================================
+
+// Obtener datos de escuelas
+app.get("/api/datosescuela", (req, res) => {
+
+    const sql = `
+        SELECT
+            D.CCT,
+            D.Nombre,
+            D.Telefono,
+            D.Email,
+            D.Calle,
+            D.NumE,
+            D.NumI,
+            D.CP,
+            D.idEstado,
+            D.idMunicipio,
+            D.idLocalidad,
+            E.Nombre AS Estado,
+            M.Nombre AS Municipio,
+            L.Nombre AS Localidad
+        FROM DatosEscuela D
+        LEFT JOIN Estados E
+            ON D.idEstado = E.idEstado
+        LEFT JOIN Municipios M
+            ON D.idMunicipio = M.idMunicipio
+        LEFT JOIN Localidades L
+            ON D.idLocalidad = L.idLocalidad
+        ORDER BY D.Nombre
+    `;
+
+    db.all(sql, [], (err, rows) => {
+
+        if(err){
+
+            return res.status(500).json({
+
+                error:err.message
+
+            });
+
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+// Obtener estados
+app.get("/api/datosescuela/estados",(req,res)=>{
+
+    db.all(
+
+        "SELECT idEstado, Nombre FROM Estados ORDER BY Nombre",
+
+        [],
+
+        (err,rows)=>{
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Obtener municipios
+app.get("/api/datosescuela/municipios",(req,res)=>{
+
+    db.all(
+
+        "SELECT idMunicipio, Nombre FROM Municipios ORDER BY Nombre",
+
+        [],
+
+        (err,rows)=>{
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Obtener localidades
+app.get("/api/datosescuela/localidades",(req,res)=>{
+
+    db.all(
+
+        "SELECT idLocalidad, Nombre FROM Localidades ORDER BY Nombre",
+
+        [],
+
+        (err,rows)=>{
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar escuela
+app.post("/api/datosescuela",(req,res)=>{
+
+    const{
+
+        CCT,
+        Nombre,
+        Telefono,
+        Email,
+        Calle,
+        NumE,
+        NumI,
+        idLocalidad,
+        idMunicipio,
+        idEstado,
+        CP
+
+    }=req.body;
+
+    db.run(
+
+        `
+        INSERT INTO DatosEscuela
+        (
+            CCT,
+            Nombre,
+            Telefono,
+            Email,
+            Calle,
+            NumE,
+            NumI,
+            idLocalidad,
+            idMunicipio,
+            idEstado,
+            CP
+        )
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        `,
+
+        [
+
+            CCT,
+            Nombre,
+            Telefono,
+            Email,
+            Calle,
+            NumE,
+            NumI,
+            idLocalidad,
+            idMunicipio,
+            idEstado,
+            CP
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                CCT
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar escuela
+app.put("/api/datosescuela/:cct",(req,res)=>{
+
+    const{cct}=req.params;
+
+    const{
+
+        Nombre,
+        Telefono,
+        Email,
+        Calle,
+        NumE,
+        NumI,
+        idLocalidad,
+        idMunicipio,
+        idEstado,
+        CP
+
+    }=req.body;
+
+    db.run(
+
+        `
+        UPDATE DatosEscuela
+        SET
+
+            Nombre=?,
+            Telefono=?,
+            Email=?,
+            Calle=?,
+            NumE=?,
+            NumI=?,
+            idLocalidad=?,
+            idMunicipio=?,
+            idEstado=?,
+            CP=?
+
+        WHERE CCT=?
+        `,
+
+        [
+
+            Nombre,
+            Telefono,
+            Email,
+            Calle,
+            NumE,
+            NumI,
+            idLocalidad,
+            idMunicipio,
+            idEstado,
+            CP,
+            cct
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Datos de la escuela actualizados."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar escuela
+app.delete("/api/datosescuela/:cct",(req,res)=>{
+
+    const{cct}=req.params;
+
+    db.run(
+
+        "DELETE FROM DatosEscuela WHERE CCT=?",
+
+        [cct],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Escuela eliminada."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+//==========================================
+// ROLES
+//==========================================
+
+// Obtener roles
+app.get("/api/roles", (req, res) => {
+
+    db.all(
+
+        `
+        SELECT
+            idRol,
+            Nombre
+        FROM Roles
+        ORDER BY Nombre
+        `,
+
+        [],
+
+        (err, rows) => {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar rol
+app.post("/api/roles", (req, res) => {
+
+    const { Nombre } = req.body;
+
+    db.run(
+
+        "INSERT INTO Roles (Nombre) VALUES (?)",
+
+        [Nombre],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idRol: this.lastID,
+
+                Nombre
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar rol
+app.put("/api/roles/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    const { Nombre } = req.body;
+
+    db.run(
+
+        "UPDATE Roles SET Nombre=? WHERE idRol=?",
+
+        [
+
+            Nombre,
+
+            id
+
+        ],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message: "Rol actualizado."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar rol
+app.delete("/api/roles/:id", (req, res) => {
+
+    const { id } = req.params;
+
+    db.run(
+
+        "DELETE FROM Roles WHERE idRol=?",
+
+        [
+
+            id
+
+        ],
+
+        function (err) {
+
+            if (err) {
+
+                return res.status(500).json({
+
+                    error: err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message: "Rol eliminado."
+
+            });
+
+        }
+
+    );
+
+});
+
+
+//==========================================
+// USUARIOS
+//==========================================
+
+// Obtener usuarios
+app.get("/api/usuarios", (req, res) => {
+
+    const sql = `
+        SELECT
+            U.idUsuario,
+            U.Nombre,
+            U.Usuario,
+            U.Password,
+            U.idRol,
+            R.Nombre AS Rol
+        FROM Usuarios U
+        INNER JOIN Roles R
+            ON U.idRol = R.idRol
+        ORDER BY U.Nombre
+    `;
+
+    db.all(sql, [], (err, rows) => {
+
+        if(err){
+
+            return res.status(500).json({
+
+                error:err.message
+
+            });
+
+        }
+
+        res.json(rows);
+
+    });
+
+});
+
+// Obtener roles
+app.get("/api/usuarios/roles",(req,res)=>{
+
+    db.all(
+
+        `
+        SELECT
+            idRol,
+            Nombre
+        FROM Roles
+        ORDER BY Nombre
+        `,
+
+        [],
+
+        (err,rows)=>{
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json(rows);
+
+        }
+
+    );
+
+});
+
+// Agregar usuario
+app.post("/api/usuarios",(req,res)=>{
+
+    const{
+
+        Nombre,
+        Usuario,
+        Password,
+        idRol
+
+    }=req.body;
+
+    db.run(
+
+        `
+        INSERT INTO Usuarios
+        (
+            Nombre,
+            Usuario,
+            Password,
+            idRol
+        )
+        VALUES (?,?,?,?)
+        `,
+
+        [
+
+            Nombre,
+            Usuario,
+            Password,
+            idRol
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                idUsuario:this.lastID
+
+            });
+
+        }
+
+    );
+
+});
+
+// Actualizar usuario
+app.put("/api/usuarios/:id",(req,res)=>{
+
+    const{id}=req.params;
+
+    const{
+
+        Nombre,
+        Usuario,
+        Password,
+        idRol
+
+    }=req.body;
+
+    db.run(
+
+        `
+        UPDATE Usuarios
+        SET
+
+            Nombre=?,
+            Usuario=?,
+            Password=?,
+            idRol=?
+
+        WHERE idUsuario=?
+        `,
+
+        [
+
+            Nombre,
+            Usuario,
+            Password,
+            idRol,
+            id
+
+        ],
+
+        function(err){
+
+            if(err){
+
+                return res.status(500).json({
+
+                    error:err.message
+
+                });
+
+            }
+
+            res.json({
+
+                message:"Usuario actualizado."
+
+            });
+
+        }
+
+    );
+
+});
+
+// Eliminar usuario
+app.delete("/api/usuarios/:id",(req,res)=>{
+
+    console.log("======== DELETE ========");
+    console.log("ID:", req.params.id);
+
+    db.run(
+
+        "DELETE FROM Usuarios WHERE idUsuario=?",
+
+        [req.params.id],
+
+        function(err){
+
+            if(err){
+
+                console.log("ERROR:", err);
+
+                return res.status(500).json({
+                    error:err.message
+                });
+
+            }
+
+            console.log("CAMBIOS:", this.changes);
+
+            res.json({
+                message:"Usuario eliminado."
+            });
+
+        }
+
+    );
+
+});
+
+
+
 // Levantar el servidor
 app.listen(PORT, () => {
     console.log(`Servidor corriendo correctamente en http://localhost:${PORT}`);
 });
-

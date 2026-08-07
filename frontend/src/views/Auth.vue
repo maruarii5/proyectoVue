@@ -172,26 +172,223 @@ const handleSubmit = async () => {
 
 </script>
 
+
 <style scoped>
-/* Un poco de estilo básico para que no se vea feo */
-.auth-container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  text-align: center;
+
+/* Fondo del formulario */
+form{
+
+    width:420px;
+
+    margin:50px auto;
+
+    padding:35px;
+
+    background:#ffffff;
+
+    border-radius:18px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+    animation:aparecer .5s ease;
+
 }
-.error {
-  color: red;
-  font-weight: bold;
+
+/* Cada grupo */
+form div{
+
+    display:flex;
+
+    flex-direction:column;
+
 }
-.toggle-text {
-  margin-top: 15px;
+
+/* Etiquetas */
+
+label{
+
+    margin-bottom:8px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#374151;
+
 }
-.toggle-link {
-  color: blue;
-  cursor: pointer;
-  text-decoration: underline;
+
+/* Cajas de texto */
+
+input{
+
+    padding:14px 16px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    transition:.25s;
+
+    outline:none;
+
+    background:#f9fafb;
+
 }
+
+input:focus{
+
+    border-color:#2563eb;
+
+    background:white;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.15);
+
+}
+
+/* Placeholders */
+
+input::placeholder{
+
+    color:#9ca3af;
+
+}
+
+/* Botón */
+
+button{
+
+    margin-top:10px;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 20px rgba(37,99,235,.30);
+
+}
+
+button:active{
+
+    transform:scale(.98);
+
+}
+
+/* Error */
+
+.error{
+
+    background:#fee2e2;
+
+    color:#b91c1c;
+
+    border-left:5px solid #dc2626;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    font-size:14px;
+
+}
+
+/* Texto inferior */
+
+.toggle-text{
+
+    margin-top:25px;
+
+    text-align:center;
+
+    color:#6b7280;
+
+    font-size:15px;
+
+}
+
+/* Link */
+
+.toggle-link{
+
+    color:#2563eb;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.toggle-link:hover{
+
+    color:#1d4ed8;
+
+    text-decoration:underline;
+
+}
+
+/* Animación */
+
+@keyframes aparecer{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* Responsive */
+
+@media(max-width:500px){
+
+    form{
+
+        width:90%;
+
+        padding:25px;
+
+    }
+
+}
+
 </style>

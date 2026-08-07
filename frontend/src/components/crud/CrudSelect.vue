@@ -1,38 +1,26 @@
 <template>
-
     <div class="grupo">
-
         <label v-if="label">
-
             {{ label }}
-
         </label>
 
         <select
             :value="modelValue"
-            @change="$emit('update:modelValue', Number($event.target.value))"
+            @change="$emit('update:modelValue', $event.target.value === '' ? '' : Number($event.target.value))"
         >
-
             <option value="">
-
                 {{ placeholder }}
-
             </option>
 
             <option
                 v-for="item in options"
-                :key="item[valueField]"
-                :value="item[valueField]"
+                :key="item[optionValue]"
+                :value="item[optionValue]"
             >
-
-                {{ item[textField] }}
-
+                {{ item[optionLabel] }}
             </option>
-
         </select>
-
     </div>
-
 </template>
 
 <script setup>
@@ -71,7 +59,7 @@ defineProps({
 
     },
 
-    valueField:{
+    optionValue:{
 
         type:String,
 
@@ -79,7 +67,7 @@ defineProps({
 
     },
 
-    textField:{
+    optionLabel:{
 
         type:String,
 

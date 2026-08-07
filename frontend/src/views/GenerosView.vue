@@ -52,7 +52,7 @@
             v-model="mostrarEliminar"
             titulo="Eliminar Género"
             mensaje="¿Deseas eliminar este género?"
-            @confirm="confirmarEliminar"
+            @confirmar="confirmarEliminar"
         />
 
     </div>

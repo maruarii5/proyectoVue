@@ -111,7 +111,11 @@ function cerrar(){
 
     justify-content:center;
 
-    align-items:center;
+    align-items:flex-start;
+
+    overflow-y:auto;
+
+    padding:40px 20px;
 
     z-index:9999;
 
@@ -121,11 +125,15 @@ function cerrar(){
 
     width:500px;
 
+    max-width:100%;
+
+    max-height:90vh;
+
+    overflow-y:auto;
+
     background:white;
 
     border-radius:10px;
-
-    overflow:hidden;
 
     box-shadow:0 15px 40px rgba(0,0,0,.25);
 

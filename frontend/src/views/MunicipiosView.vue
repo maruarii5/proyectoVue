@@ -31,8 +31,9 @@
                 label="Estado"
                 v-model="municipio.idEstado"
                 :options="estados"
-                valueField="idEstado"
-                textField="Nombre"
+                optionValue="idEstado"
+                optionLabel="Nombre"
+                placeholder="Seleccione un estado"
             />
 
             <template #footer>
@@ -101,7 +102,7 @@ const municipio = ref({
 
     Nombre: "",
 
-    idEstado: ""
+    idEstado: null
 
 });
 
@@ -218,7 +219,7 @@ function nuevoMunicipio(){
 
         Nombre:"",
 
-        idEstado:""
+        idEstado:null
 
     };
 

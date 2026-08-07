@@ -32,8 +32,8 @@
                 v-model="localidad.idMunicipio"
                 label="Municipio"
                 :options="municipios"
-                valueField="idMunicipio"
-                textField="Nombre"
+                optionValue="idMunicipio"
+                optionLabel="Nombre"
             />
 
             <template #footer>
@@ -60,7 +60,7 @@
             v-model="mostrarEliminar"
             titulo="Eliminar Localidad"
             mensaje="¿Deseas eliminar esta localidad?"
-            @confirm="confirmarEliminar"
+            @confirmar="confirmarEliminar"
         />
 
     </div>
