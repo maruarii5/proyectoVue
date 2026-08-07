@@ -102,7 +102,7 @@ const handleSubmit = async () => {
 
   isLoading.value = true;
   try {
-    const endpoint = isLogin.value ? 'http://localhost:3000/login' : 'http://localhost:3000/register';
+    const endpoint = isLogin.value ? 'http://proyectovue-production-73f7.up.railway.app/login' : 'http://proyectovue-production-73f7.up.railway.app/register';
     
     const payload = isLogin.value 
       ? { usuario: usuario.value, password: password.value }

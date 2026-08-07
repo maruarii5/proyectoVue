@@ -156,7 +156,7 @@ async function cargarGeneros(){
 
         const response = await fetch(
 
-            "http://localhost:3000/api/generos",
+            "http://proyectovue-production-73f7.up.railway.app/api/generos",
 
             {
 
@@ -234,7 +234,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url = "http://localhost:3000/api/generos";
+        let url = "http://proyectovue-production-73f7.up.railway.app/api/generos";
 
         let metodo = "POST";
 
@@ -312,7 +312,7 @@ async function confirmarEliminar(){
 
         const response = await fetch(
 
-            `http://localhost:3000/api/generos/${idEliminar.value}`,
+            `http://proyectovue-production-73f7.up.railway.app/api/generos/${idEliminar.value}`,
 
             {
 

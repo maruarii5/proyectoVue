@@ -120,8 +120,8 @@ const handleSubmit = async () => {
   // 2. Si todo está bien, mandamos la info al Backend
   try {
     const endpoint = isLogin.value
-      ? "http://localhost:3000/api/auth/login"
-      : "http://localhost:3000/api/auth/register";
+      ? "http://proyectovue-production-73f7.up.railway.app/api/auth/login"
+      : "http://proyectovue-production-73f7.up.railway.app/api/auth/register";
 
     const response = await fetch(endpoint, {
       method: "POST",
@@ -146,7 +146,7 @@ const handleSubmit = async () => {
 
     if (isLogin.value) {
       const respuesta = await fetch(
-        "http://localhost:3000/api/auth/me",
+        "http://proyectovue-production-73f7.up.railway.app/api/auth/me",
         {
           method: "GET",
           credentials: "include"

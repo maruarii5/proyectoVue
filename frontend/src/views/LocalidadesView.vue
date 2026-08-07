@@ -192,7 +192,7 @@ async function cargarLocalidades(){
 
         const response=await fetch(
 
-            "http://localhost:3000/api/localidades",
+            "http://proyectovue-production-73f7.up.railway.app/api/localidades",
 
             {
 
@@ -230,7 +230,7 @@ async function cargarMunicipios(){
 
         const response=await fetch(
 
-            "http://localhost:3000/api/municipios",
+            "http://proyectovue-production-73f7.up.railway.app/api/municipios",
 
             {
 
@@ -322,7 +322,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://localhost:3000/api/localidades";
+        let url="http://proyectovue-production-73f7.up.railway.app/api/localidades";
 
         let metodo="POST";
 
@@ -402,7 +402,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://localhost:3000/api/localidades/${idEliminar.value}`,
+            `http://proyectovue-production-73f7.up.railway.app/api/localidades/${idEliminar.value}`,
 
             {
 

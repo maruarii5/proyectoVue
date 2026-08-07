@@ -148,7 +148,7 @@ async function cargarTipos(){
 
     const response=await fetch(
 
-        "http://localhost:3000/api/tipopersonal",
+        "http://proyectovue-production-73f7.up.railway.app/api/tipopersonal",
 
         {
 
@@ -212,7 +212,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://localhost:3000/api/tipopersonal";
+        let url="http://proyectovue-production-73f7.up.railway.app/api/tipopersonal";
 
         let metodo="POST";
 
@@ -286,7 +286,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://localhost:3000/api/tipopersonal/${idEliminar.value}`,
+            `http://proyectovue-production-73f7.up.railway.app/api/tipopersonal/${idEliminar.value}`,
 
             {
 

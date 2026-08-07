@@ -192,7 +192,7 @@ function filtrarDatos(texto) {
 // Cargar registros
 async function cargarDatos() {
   try {
-    const response = await fetch("http://localhost:3000/api/datospersonales", {
+    const response = await fetch("http://proyectovue-production-73f7.up.railway.app/api/datospersonales", {
       credentials: "include"
     });
     registros.value = await response.json();
@@ -204,28 +204,28 @@ async function cargarDatos() {
 // Cargar catálogos con manejo de excepciones
 async function cargarEstados() {
   try {
-    const response = await fetch("http://localhost:3000/api/datospersonales/estados", { credentials: "include" });
+    const response = await fetch("http://proyectovue-production-73f7.up.railway.app/api/datospersonales/estados", { credentials: "include" });
     listaEstados.value = await response.json();
   } catch (e) { console.error("Error cargando estados", e); }
 }
 
 async function cargarMunicipios() {
   try {
-    const response = await fetch("http://localhost:3000/api/datospersonales/municipios", { credentials: "include" });
+    const response = await fetch("http://proyectovue-production-73f7.up.railway.app/api/datospersonales/municipios", { credentials: "include" });
     listaMunicipios.value = await response.json();
   } catch (e) { console.error("Error cargando municipios", e); }
 }
 
 async function cargarLocalidades() {
   try {
-    const response = await fetch("http://localhost:3000/api/datospersonales/localidades", { credentials: "include" });
+    const response = await fetch("http://proyectovue-production-73f7.up.railway.app/api/datospersonales/localidades", { credentials: "include" });
     listaLocalidades.value = await response.json();
   } catch (e) { console.error("Error cargando localidades", e); }
 }
 
 async function cargarGeneros() {
   try {
-    const response = await fetch("http://localhost:3000/api/datospersonales/generos", { credentials: "include" });
+    const response = await fetch("http://proyectovue-production-73f7.up.railway.app/api/datospersonales/generos", { credentials: "include" });
     listaGeneros.value = await response.json();
   } catch (e) { console.error("Error cargando géneros", e); }
 }
@@ -298,7 +298,7 @@ async function guardarRegistro() {
   }
 
   try {
-    let url = "http://localhost:3000/api/datospersonales";
+    let url = "http://proyectovue-production-73f7.up.railway.app/api/datospersonales";
     let metodo = "POST";
 
     if (dato.value.idDatosP) {
@@ -331,7 +331,7 @@ function abrirEliminar(item) {
 
 async function confirmarEliminar() {
   try {
-    const response = await fetch(`http://localhost:3000/api/datospersonales/${idEliminar.value}`, {
+    const response = await fetch(`http://proyectovue-production-73f7.up.railway.app/api/datospersonales/${idEliminar.value}`, {
       method: "DELETE",
       credentials: "include"
     });

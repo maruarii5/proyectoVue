@@ -199,7 +199,7 @@ async function cargarEmpleados(){
 
     const response = await fetch(
 
-        "http://localhost:3000/api/intendencia",
+        "http://proyectovue-production-73f7.up.railway.app/api/intendencia",
 
         {
 
@@ -269,7 +269,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://localhost:3000/api/intendencia";
+        let url="http://proyectovue-production-73f7.up.railway.app/api/intendencia";
 
         let metodo="POST";
 
@@ -343,7 +343,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://localhost:3000/api/intendencia/${idEliminar.value}`,
+            `http://proyectovue-production-73f7.up.railway.app/api/intendencia/${idEliminar.value}`,
 
             {
 

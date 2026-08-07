@@ -193,7 +193,7 @@ async function cargarUsuarios(){
 
     const response=await fetch(
 
-        "http://localhost:3000/api/usuarios",
+        "http://proyectovue-production-73f7.up.railway.app/api/usuarios",
 
         {
 
@@ -215,7 +215,7 @@ async function cargarRoles(){
 
     const response=await fetch(
 
-        "http://localhost:3000/api/usuarios/roles",
+        "http://proyectovue-production-73f7.up.railway.app/api/usuarios/roles",
 
         {
 
@@ -303,7 +303,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://localhost:3000/api/usuarios";
+        let url="http://proyectovue-production-73f7.up.railway.app/api/usuarios";
 
         let metodo="POST";
 
@@ -381,7 +381,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://localhost:3000/api/usuarios/${idEliminar.value}`,
+            `http://proyectovue-production-73f7.up.railway.app/api/usuarios/${idEliminar.value}`,
 
             {
 

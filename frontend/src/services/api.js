@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://proyectovue-production-73f7.up.railway.app/api";
 
 async function request(endpoint, options = {}) {
 

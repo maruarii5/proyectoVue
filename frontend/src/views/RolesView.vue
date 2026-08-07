@@ -150,7 +150,7 @@ async function cargarRoles(){
 
     const response = await fetch(
 
-        "http://localhost:3000/api/roles",
+        "http://proyectovue-production-73f7.up.railway.app/api/roles",
 
         {
 
@@ -214,7 +214,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://localhost:3000/api/roles";
+        let url="http://proyectovue-production-73f7.up.railway.app/api/roles";
 
         let metodo="POST";
 
@@ -288,7 +288,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://localhost:3000/api/roles/${idEliminar.value}`,
+            `http://proyectovue-production-73f7.up.railway.app/api/roles/${idEliminar.value}`,
 
             {
 
