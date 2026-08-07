@@ -19,6 +19,25 @@ const SECRET = process.env.JWT_SECRET;
 app.use(cookieParser());
 
 // Middlewares
+// --- REEMPLAZA A PARTIR DE AQUÍ ---
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://proyecto-vue-sand.vercel.app",
+        "https://proyecto-vue-git-main-lab-rats2.vercel.app"
+    ],
+    credentials: true
+})); 
+// --- HASTA AQUÍ ---
+
+app.use(express.json()); // Permite recibir datos en formato JSON
+
+app.use("/api/auth", authRoutes);
+
+// Activar el soporte de Llaves Foráneas en SQLite
+db.run("PRAGMA foreign_keys = ON;");
+
+// Middlewares
 app.use(cors({ // Permite que tu frontend en Vue se conecte sin problemas de CORS
     origin: "http://localhost:5173",
     credentials: true
