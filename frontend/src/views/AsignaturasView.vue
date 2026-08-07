@@ -168,7 +168,7 @@ async function cargarAsignaturas(){
 
     const response = await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/asignaturas",
+        "https://proyectovue-production-73f7.up.railway.app/api/asignaturas",
 
         {
 
@@ -240,7 +240,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://proyectovue-production-73f7.up.railway.app/api/asignaturas";
+        let url="https://proyectovue-production-73f7.up.railway.app/api/asignaturas";
 
         let metodo="POST";
 
@@ -314,7 +314,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://proyectovue-production-73f7.up.railway.app/api/asignaturas/${idEliminar.value}`,
+            `https://proyectovue-production-73f7.up.railway.app/api/asignaturas/${idEliminar.value}`,
 
             {
 

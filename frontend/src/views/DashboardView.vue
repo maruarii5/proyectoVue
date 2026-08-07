@@ -61,7 +61,7 @@ onMounted(async () => {
     try {
 
         const response = await fetch(
-            "http://proyectovue-production-73f7.up.railway.app/api/auth/me",
+            "https://proyectovue-production-73f7.up.railway.app/api/auth/me",
             {
                 credentials: "include"
             }

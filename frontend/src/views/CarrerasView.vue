@@ -169,7 +169,7 @@ async function cargarCarreras(){
 
     const response = await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/carreras",
+        "https://proyectovue-production-73f7.up.railway.app/api/carreras",
 
         {
 
@@ -247,7 +247,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://proyectovue-production-73f7.up.railway.app/api/carreras";
+        let url="https://proyectovue-production-73f7.up.railway.app/api/carreras";
 
         let metodo="POST";
 
@@ -321,7 +321,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://proyectovue-production-73f7.up.railway.app/api/carreras/${idEliminar.value}`,
+            `https://proyectovue-production-73f7.up.railway.app/api/carreras/${idEliminar.value}`,
 
             {
 

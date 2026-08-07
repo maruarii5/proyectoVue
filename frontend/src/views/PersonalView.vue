@@ -233,7 +233,7 @@ async function cargarPersonal(){
 
     const response = await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/personal",
+        "https://proyectovue-production-73f7.up.railway.app/api/personal",
 
         {
 
@@ -263,7 +263,7 @@ async function cargarDatos(){
 
     const response = await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/personal/personas",
+        "https://proyectovue-production-73f7.up.railway.app/api/personal/personas",
 
         {
 
@@ -285,7 +285,7 @@ async function cargarTipos(){
 
     const response = await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/personal/tipos",
+        "https://proyectovue-production-73f7.up.railway.app/api/personal/tipos",
 
         {
 
@@ -371,7 +371,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://proyectovue-production-73f7.up.railway.app/api/personal";
+        let url="https://proyectovue-production-73f7.up.railway.app/api/personal";
 
         let metodo="POST";
 
@@ -445,7 +445,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://proyectovue-production-73f7.up.railway.app/api/personal/${idEliminar.value}`,
+            `https://proyectovue-production-73f7.up.railway.app/api/personal/${idEliminar.value}`,
 
             {
 

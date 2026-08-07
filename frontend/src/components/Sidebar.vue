@@ -156,7 +156,7 @@ async function cerrarSesion(){
 
         await fetch(
 
-            "http://proyectovue-production-73f7.up.railway.app/api/auth/logout",
+            "https://proyectovue-production-73f7.up.railway.app/api/auth/logout",
 
             {
 

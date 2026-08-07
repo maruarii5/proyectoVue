@@ -275,7 +275,7 @@ async function cargarEscuelas(){
 
     const response=await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/datosescuela",
+        "https://proyectovue-production-73f7.up.railway.app/api/datosescuela",
 
         {
 
@@ -297,7 +297,7 @@ async function cargarEstados(){
 
     const response=await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/datosescuela/estados",
+        "https://proyectovue-production-73f7.up.railway.app/api/datosescuela/estados",
 
         {
 
@@ -319,7 +319,7 @@ async function cargarMunicipios(){
 
     const response=await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/datosescuela/municipios",
+        "https://proyectovue-production-73f7.up.railway.app/api/datosescuela/municipios",
 
         {
 
@@ -341,7 +341,7 @@ async function cargarLocalidades(){
 
     const response=await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/datosescuela/localidades",
+        "https://proyectovue-production-73f7.up.railway.app/api/datosescuela/localidades",
 
         {
 
@@ -452,7 +452,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://proyectovue-production-73f7.up.railway.app/api/datosescuela";
+        let url="https://proyectovue-production-73f7.up.railway.app/api/datosescuela";
 
         let metodo="POST";
 
@@ -526,7 +526,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://proyectovue-production-73f7.up.railway.app/api/datosescuela/${cctEliminar.value}`,
+            `https://proyectovue-production-73f7.up.railway.app/api/datosescuela/${cctEliminar.value}`,
 
             {
 

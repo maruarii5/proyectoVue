@@ -220,7 +220,7 @@ async function cargarAlumnos(){
 
     const response=await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/alumnos",
+        "https://proyectovue-production-73f7.up.railway.app/api/alumnos",
 
         {
 
@@ -254,7 +254,7 @@ async function cargarPersonas(){
 
     const response=await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/alumnos/personas",
+        "https://proyectovue-production-73f7.up.railway.app/api/alumnos/personas",
 
         {
 
@@ -276,7 +276,7 @@ async function cargarCarreras(){
 
     const response=await fetch(
 
-        "http://proyectovue-production-73f7.up.railway.app/api/alumnos/carreras",
+        "https://proyectovue-production-73f7.up.railway.app/api/alumnos/carreras",
 
         {
 
@@ -365,7 +365,7 @@ async function guardarRegistro(){
 
     try{
 
-        let url="http://proyectovue-production-73f7.up.railway.app/api/alumnos";
+        let url="https://proyectovue-production-73f7.up.railway.app/api/alumnos";
 
         let metodo="POST";
 
@@ -441,7 +441,7 @@ async function confirmarEliminar(){
 
         const response=await fetch(
 
-            `http://proyectovue-production-73f7.up.railway.app/api/alumnos/${idEliminar.value}`,
+            `https://proyectovue-production-73f7.up.railway.app/api/alumnos/${idEliminar.value}`,
 
             {
 
